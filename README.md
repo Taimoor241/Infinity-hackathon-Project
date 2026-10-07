@@ -88,4 +88,5 @@ Suggested platform: Vercel. Suggested hosted database: Aiven free PostgreSQL (ch
 - Transcript generation requires a valid Anthropic API key and network access. This session did not have an Anthropic key available, so a live provider acceptance run was not possible here.
 - The review step edits the extracted JSON draft in a textarea; it is intentionally minimal.
 - Sessions expire after seven days. The UI is a demo and should receive production hardening (CSRF protections, rate limits, audit logging, monitoring, and secret rotation) before use with sensitive real data.
+- `npm audit` reports three high-severity findings in the Prisma 6 configuration/deepmerge toolchain; review and upgrade that toolchain before production use.
 - Demo users and password are intended only for local evaluation.
