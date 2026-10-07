@@ -1,0 +1,2 @@
+import {NextResponse} from 'next/server';import {requireUser,AuthError} from '@/lib/auth';import {getProjects,getTasks} from '@/lib/access';
+export async function GET(req:Request){try{const u=await requireUser();const {searchParams}=new URL(req.url);if(searchParams.has('tasks'))return NextResponse.json({tasks:await getTasks(u,searchParams.get('projectId')||undefined)});return NextResponse.json({projects:await getProjects(u)})}catch(e){return NextResponse.json({error:e instanceof Error?e.message:'Error'},{status:e instanceof AuthError?e.status:500})}}

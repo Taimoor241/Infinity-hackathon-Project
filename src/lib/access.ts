@@ -1,0 +1,7 @@
+import { prisma } from './db';
+import type { SessionUser } from './auth';
+import { AuthError } from './auth';
+export function projectWhere(user:SessionUser){if(user.role==='ADMIN')return {};if(user.role==='MANAGER')return {managerId:user.id};return {tasks:{some:{assigneeId:user.id}}}}
+export async function getProjects(user:SessionUser){const projects=await prisma.project.findMany({where:projectWhere(user),include:{manager:{select:{id:true,name:true}},_count:{select:{tasks:true}}},orderBy:{deadline:'asc'}});if(user.role!=='AGENT')return projects;return Promise.all(projects.map(async p=>({...p,_count:{tasks:await prisma.task.count({where:{projectId:p.id,assigneeId:user.id}})}})))}
+export async function getProjectById(user:SessionUser,id:string){const p=await prisma.project.findFirst({where:{id,...projectWhere(user)},include:{manager:{select:{id:true,name:true}},tasks:{where:user.role==='AGENT'?{assigneeId:user.id}:{},include:{assignee:{select:{id:true,name:true,specialization:true}}},orderBy:{deadline:'asc'}}}});if(!p)throw new AuthError(403,'You do not have access to this project.');return p}
+export async function getTasks(user:SessionUser,projectId?:string){const where:any={...(projectId?{projectId}:{})};if(user.role==='AGENT')where.assigneeId=user.id;if(user.role==='MANAGER')where.project={managerId:user.id};return prisma.task.findMany({where,include:{project:{select:{id:true,name:true,manager:{select:{id:true,name:true}}}},assignee:{select:{id:true,name:true}}},orderBy:{deadline:'asc'}})}

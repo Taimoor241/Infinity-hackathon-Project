@@ -1,0 +1,5 @@
+UrbanCart Website — UrbanCart Clothing. Ayesha Khan (Web PM) owns the project; final project deadline is October 20, 2026 (not October 18). Deliver product catalog UI by Oct 12 (Ali, 12h), demo cart UI by Oct 15 (Ali, 8h), product and cart APIs by Oct 14 (Hamza, 14h), and website integration and testing by Oct 19 (Ali, 6h; not Oct 17).
+
+QuickServe Mobile App — QuickServe Services. Bilal Ahmed (Mobile PM) owns it; deadline Oct 24, 2026. Sara: login and profile screens Oct 12, 8h; service booking screens Oct 17, 12h. Hamza: booking and account APIs Oct 16, 16h. Usman: mobile integration and testing Oct 22, 10h (the corrected estimate is 10 hours, not 8).
+
+HelpDeskPro AI Assistant — HelpDeskPro Solutions. Hina Malik (AI PM) owns it; deadline Oct 22, 2026. Maryam: FAQ document processing Oct 13, 10h; assistant evaluation and testing Oct 21, 8h (Maryam owns testing, not Zain). Zain: assistant answer generation Oct 17, 14h; human escalation flow Oct 18, 6h. Kamran is a client contact and must not receive work. Rejected ideas: payments, inventory, maps, real email sending, ticketing integration, and management hours.
