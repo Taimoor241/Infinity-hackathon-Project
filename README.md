@@ -38,7 +38,7 @@ Open http://localhost:3000. For a quick local PostgreSQL instance, create a data
 - `DATABASE_URL` — PostgreSQL connection string.
 - `SESSION_SECRET` — random signing secret, minimum 32 characters.
 - `ANTHROPIC_API_KEY` — server-only API key; required for extraction.
-- `AI_MODEL` — Anthropic model name, defaults to `claude-3-5-sonnet-latest`.
+- `AI_MODEL` — Anthropic model name, defaults to `claude-sonnet-5` (checked against Anthropic's current model documentation on 2026-10-07).
 
 Never commit `.env` or real secrets. `.gitignore` excludes `.env`.
 
@@ -75,7 +75,7 @@ Acceptance fixture target: 3 projects / 12 tasks — UrbanCart (4 tasks, 40h; de
 
 ## Deployment (optional)
 
-Suggested platform: Vercel. Suggested hosted database: Aiven free PostgreSQL (check current availability/terms). Create the Aiven database and copy its SSL-enabled PostgreSQL URI into Vercel `DATABASE_URL`; configure `SESSION_SECRET`, `ANTHROPIC_API_KEY`, and `AI_MODEL` as encrypted environment variables. Deploy the repository to Vercel, run `npx prisma migrate deploy` against the production database, then run `npm run seed` once. Verify the deployed app and remove demo accounts before any real use. Do not expose database or AI credentials in client code.
+Suggested free-for-personal-project setup: Vercel Hobby + Aiven Free PostgreSQL (or Neon Free). Check the providers' current limits first: Vercel Hobby is for personal, non-commercial use, and Aiven may power off an inactive free service. Create the database and copy its SSL-enabled URI into `DATABASE_URL`. In Vercel, configure `DATABASE_URL`, a random `SESSION_SECRET` (32+ characters), `ANTHROPIC_API_KEY`, and `AI_MODEL=claude-sonnet-5` as server-side environment variables. Before public use, point a local terminal at the hosted database and run `npx prisma migrate deploy` and `npm run seed` once; then import this GitHub repository into Vercel (root directory `/`, production branch `main`) and deploy. Later pushes to `main` deploy automatically. Vercel/Aiven/Neon free tiers do not include Anthropic API usage; check Anthropic's current API pricing before enabling transcript extraction. This seed uses known demo credentials; treat the hosted app as a public demo and do not store private data or use it for real operations without production hardening.
 
 ## Demo video / live link
 
