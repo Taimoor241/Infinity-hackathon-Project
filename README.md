@@ -4,20 +4,20 @@ A hackathon MVP for turning meeting transcripts into projects and assigned tasks
 
 ## Stack
 
-Next.js App Router, TypeScript, Tailwind-free custom CSS, Prisma ORM, PostgreSQL, bcrypt password hashes, signed httpOnly JWT cookie sessions, Zod validation, and Anthropic Messages API.
+Next.js App Router, TypeScript, Tailwind-free custom CSS, Prisma ORM, PostgreSQL, bcrypt password hashes, signed httpOnly JWT cookie sessions, Zod validation, and Google Gemini Developer API.
 
 ## Features
 
 - Login/logout with seeded demo users (no signup or password reset).
 - Role-filtered dashboards: administrators see all projects, managers see projects they manage, agents see their assigned work and only the related project context.
 - Project detail task tables and read-only team directory.
-- Admin-only transcript extraction: server sends the transcript and only DB directory fields `id`, `name`, `role`, `skills` to Anthropic; output is validated as a whole before a single DB transaction saves it.
+- Admin-only transcript extraction: server sends the transcript and only DB directory fields `id`, `name`, `role`, `skills` to Gemini; output is validated as a whole before a single DB transaction saves it.
 - Invalid fields are surfaced for JSON review; no partial persistence on AI/validation failure.
 - Persistent PostgreSQL storage.
 
 ## Requirements
 
-Node.js 20.9+ and PostgreSQL 14+. Obtain an Anthropic API key for transcript extraction.
+Node.js 20.9+ and PostgreSQL 14+. Create a Google AI Studio API key on the Gemini API Free Tier for transcript extraction.
 
 ## Setup and run
 
@@ -37,8 +37,8 @@ Open http://localhost:3000. For a quick local PostgreSQL instance, create a data
 
 - `DATABASE_URL` — PostgreSQL connection string.
 - `SESSION_SECRET` — random signing secret, minimum 32 characters.
-- `ANTHROPIC_API_KEY` — server-only API key; required for extraction.
-- `AI_MODEL` — Anthropic model name, defaults to `claude-sonnet-5` (checked against Anthropic's current model documentation on 2026-10-07).
+- `GEMINI_API_KEY` — server-only Google AI Studio API key; required for extraction.
+- `AI_MODEL` — Gemini model name, defaults to `gemini-3.5-flash`.
 
 Never commit `.env` or real secrets. `.gitignore` excludes `.env`.
 
@@ -65,7 +65,7 @@ All seeded accounts use password `Demo123!`.
 
 1. Sign in as `admin@novaworks.example` / `Demo123!`.
 2. Choose **Create from transcript**, click **Load sample transcript**, then **Create from transcript**.
-3. The extraction is a genuine Anthropic API call; it is not replaced with prefilled extraction results. Review any flagged unresolved fields before saving.
+3. The extraction is a genuine Gemini API call; it is not replaced with prefilled extraction results. Review any flagged unresolved fields before saving.
 4. The sample content in `data/sample-transcript.txt` is a reconstructed acceptance fixture based on the supplied brief. The referenced PDF / original Section 7 transcript was not attached in this workspace.
 5. To try the changed-input test, change QuickServe integration to 12 hours and October 23, 2026 before submitting; only that task should differ.
 6. After creating the fixture, Ayesha should see only UrbanCart; Ali sees their three UrbanCart tasks; Hamza sees two tasks across UrbanCart and QuickServe. Refresh the page to check persistence.
@@ -75,7 +75,7 @@ Acceptance fixture target: 3 projects / 12 tasks — UrbanCart (4 tasks, 40h; de
 
 ## Deployment (optional)
 
-Suggested free-for-personal-project setup: Vercel Hobby + Aiven Free PostgreSQL (or Neon Free). Check the providers' current limits first: Vercel Hobby is for personal, non-commercial use, and Aiven may power off an inactive free service. Create the database and copy its SSL-enabled URI into `DATABASE_URL`. In Vercel, configure `DATABASE_URL`, a random `SESSION_SECRET` (32+ characters), `ANTHROPIC_API_KEY`, and `AI_MODEL=claude-sonnet-5` as server-side environment variables. Before public use, point a local terminal at the hosted database and run `npx prisma migrate deploy` and `npm run seed` once; then import this GitHub repository into Vercel (root directory `/`, production branch `main`) and deploy. Later pushes to `main` deploy automatically. Vercel/Aiven/Neon free tiers do not include Anthropic API usage; check Anthropic's current API pricing before enabling transcript extraction. This seed uses known demo credentials; treat the hosted app as a public demo and do not store private data or use it for real operations without production hardening.
+Suggested $0 personal-project setup: Vercel Hobby + Neon Free PostgreSQL + Gemini API Free Tier. Check provider limits and terms before deployment. Configure `DATABASE_URL`, a random `SESSION_SECRET` (32+ characters), `GEMINI_API_KEY`, and `AI_MODEL=gemini-3.5-flash` as server-side environment variables. Before public use, point a local terminal at the hosted database and run `npx prisma migrate deploy` and `npm run seed` once; then import this GitHub repository into Vercel (root directory `/`, production branch `main`) and deploy. Later pushes to `main` deploy automatically. Gemini's Free Tier has quotas and Google may use free-tier prompts and responses to improve its products; do not send sensitive transcripts. Vercel Hobby is for personal, non-commercial use. This seed uses known demo credentials; treat the hosted app as a public demo and do not store private data or use it for real operations without production hardening.
 
 ## Demo video / live link
 
@@ -85,7 +85,7 @@ Suggested free-for-personal-project setup: Vercel Hobby + Aiven Free PostgreSQL 
 ## Known limitations
 
 - The original sample meeting transcript PDF was not supplied; the included fixture reconstructs the requested test decisions and must not be treated as the missing source transcript.
-- Transcript generation requires a valid Anthropic API key and network access. This session did not have an Anthropic key available, so a live provider acceptance run was not possible here.
+- Transcript generation requires a valid Gemini API key and network access. This session did not have a Gemini key available, so a live provider acceptance run was not possible here.
 - The review step edits the extracted JSON draft in a textarea; it is intentionally minimal.
 - Sessions expire after seven days. The UI is a demo and should receive production hardening (CSRF protections, rate limits, audit logging, monitoring, and secret rotation) before use with sensitive real data.
 - `npm audit` reports three high-severity findings in the Prisma 6 configuration/deepmerge toolchain; review and upgrade that toolchain before production use.
